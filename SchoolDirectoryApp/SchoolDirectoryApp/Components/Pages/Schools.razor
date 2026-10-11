@@ -1,0 +1,78 @@
+@page "/schools"
+@rendermode InteractiveServer
+
+@using SchoolDirectoryApp.Models
+@using SchoolDirectoryApp.Services
+
+
+@inject SchoolService SchoolService
+
+<h3>School Directory Dashboard </h3>
+
+@* loading state  *@
+@if (schools == null && !error)
+{
+    <p> Loading schools!!! </p>
+}
+@* error state *@
+else if (error)
+{
+    <p class="text-danger">
+        Unable to retrieve school data.
+    </p>
+}
+else
+{
+    <div class="mb-3">
+        <input @bind="Search"
+               @bind:event="oninput"
+               class="form-control search-input"
+               placeholder="Search school..." />
+    </div>
+    
+    <SchoolDetails School="selectedSchool" />
+
+    // school list
+    <div class="row"> 
+        @foreach (var school in FilteredSchools)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="custom-school-card h-100 p-3 card">
+                <SchoolCard School="school" OnSelect="@HandleSelect"/>
+                 </div>
+            </div>
+            }
+        </div>
+    }
+    @code {
+        private List<School>? schools;
+        private School? selectedSchool;
+        private string Search = string.Empty;
+        private bool error = false;
+
+        protected override async Task OnInitializedAsync()
+        {
+            // just checking temporarily force 3 second delay
+            await Task.Delay(3000);  
+            
+            var result = await SchoolService.GetSchoolsAsync();
+            if (result == null)
+            {
+                error = true;
+            }
+            else
+            {
+                schools = result;
+            }
+        }
+
+        private void HandleSelect(School school)
+        {
+            selectedSchool = school;
+        }
+
+        private IEnumerable<School> FilteredSchools =>
+            string.IsNullOrWhiteSpace(Search)
+                ? (schools ?? new())
+                : (schools ?? new()).Where(s => s.SchoolName.Contains(Search, StringComparison.OrdinalIgnoreCase));
+    }

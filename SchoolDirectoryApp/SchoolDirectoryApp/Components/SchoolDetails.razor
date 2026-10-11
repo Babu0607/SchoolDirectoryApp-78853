@@ -1,0 +1,26 @@
+@using SchoolDirectoryApp.Models
+
+@if (School != null)
+{
+    <div class="card p-4 mb-4 bg-light border-primary">
+        <h4 class="mb-3">School Details: @School.SchoolName</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>School ID:</strong> @School.SchoolId</p>
+                <p><strong>Address:</strong> @School.Address</p>
+                <p><strong>Phone:</strong> @School.PhoneNo</p>
+                <p><strong>Email:</strong> @School.EmailAdress</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Proprietor:</strong> @School.ProprietorFullName</p>
+                <p><strong>Head:</strong> @School.HeadFullName</p>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter] public School? School { get; set; }
+
+}

@@ -1,0 +1,23 @@
+@using SchoolDirectoryApp.Models
+
+<div class="card mb-3 p-3 shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title">@School.SchoolName</h5>
+        <p class="card-text text-muted mb-2">@School.Address</p>
+        <p class="card-text small mb-3"><strong>Phone:</strong> @School.PhoneNo</p>
+        <button class="btn-primary btn-sm" @onclick="SelectSchool">View Detail</button>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] 
+    public School School { get; set; } = default;
+
+    [Parameter] public EventCallback<School> OnSelect { get; set; }
+
+    private async Task SelectSchool()
+    {
+        await OnSelect.InvokeAsync(School);
+    }
+}
